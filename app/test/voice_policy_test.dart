@@ -27,7 +27,7 @@ void main() {
     expect(VoicePolicy.autoExecutes(r), isTrue);
     expect(
       VoicePolicy.created(r, 'Alarma creada ✅\nAna, Luis y Pedro deben aceptarla.'),
-      'Listo. Alarma creada, hoy, a las 4 de la tarde, para Ana, Luis y Pedro. '
+      'Listo. Alarma creada, hoy, a las 4 de la tarde, para ti, Ana, Luis y Pedro. '
       'Ana, Luis y Pedro deben aceptarla.',
     );
   });

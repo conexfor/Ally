@@ -67,14 +67,9 @@ class _AlarmFormScreenState extends ConsumerState<AlarmFormScreen> {
     } else if (widget.draft != null) {
       _fillFromDraft(widget.draft!, me?.id ?? '');
     } else {
-      if (widget.presetGroupId != null) {
-        _groups.add(widget.presetGroupId!);
-        _includeMe = false;
-      }
-      if (widget.presetUserId != null) {
-        _users.add(widget.presetUserId!);
-        _includeMe = false;
-      }
+      // Quien crea la alarma también la recibe salvo que lo desmarque.
+      if (widget.presetGroupId != null) _groups.add(widget.presetGroupId!);
+      if (widget.presetUserId != null) _users.add(widget.presetUserId!);
     }
     if (mounted) setState(() => _loaded = true);
   }

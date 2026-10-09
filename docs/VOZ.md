@@ -6,7 +6,8 @@ Flujo (Android):
 2. Con el teléfono encendido (incluso con la app cerrada) dice **«Hey Ally»** y oye un pitido.
 3. Dice la orden: *«establece una alarma a las 4:00 pm con Ana, Luis y Pedro»*.
 4. La alarma se crea **sin pedir confirmación** (solo si se entendió toda la orden) y la app responde en voz alta:
-   *«Listo. Alarma creada, hoy, a las 4 de la tarde, para Ana, Luis y Pedro.»*
+   *«Listo. Alarma creada, hoy, a las 4 de la tarde, para ti, Ana, Luis y Pedro. Ana, Luis y Pedro deben aceptarla.»*
+   Quien crea la alarma siempre la recibe; a los demás les suena cuando la aceptan.
 5. Si falta algo (p. ej. «a las 6»: ¿de la mañana o de la tarde?, o hay dos contactos llamados Carlos),
    lo pregunta en voz alta y vuelve a escuchar. Eliminar o cambiar alarmas siempre pide un «sí».
 

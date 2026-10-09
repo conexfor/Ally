@@ -10,7 +10,7 @@ void main() {
       expect(r.draft.intent, CommandIntent.createAlarm);
       expect(r.draft.date, date(2026, 10, 4));
       expect(r.draft.time, time(8, 0));
-      expect(recipientIds(r), ['u-nicolas']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas']);
       expect(r.status, InterpretationStatus.needsConfirmation);
     });
 
@@ -18,7 +18,7 @@ void main() {
       final r = interpret('Pon una alarma hoy a las 2:30 pm para Nicolás y Juan.');
       expect(r.draft.date, date(2026, 10, 3));
       expect(r.draft.time, time(14, 30));
-      expect(recipientIds(r), ['u-nicolas', 'u-juan']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas', 'u-juan']);
     });
 
     test('"Pon una alarma hoy a las 14:30 para Juan y María"', () {
@@ -26,7 +26,7 @@ void main() {
       expect(r.draft.intent, CommandIntent.createAlarm);
       expect(r.draft.date, date(2026, 10, 3));
       expect(r.draft.time, time(14, 30));
-      expect(recipientIds(r), ['u-juan', 'u-maria']);
+      expect(recipientIds(r), ['u-me', 'u-juan', 'u-maria']);
     });
 
     test('"Todos los lunes a las 9 para el equipo"', () {
@@ -35,8 +35,8 @@ void main() {
       expect(r.draft.repeat!.frequency, RepeatFrequency.weekly);
       expect(r.draft.repeat!.daysOfWeek, {DateTime.monday});
       expect(r.draft.time, time(9, 0));
-      expect(r.draft.recipients.single.type, ResolvedRecipientType.group);
-      expect(r.draft.recipients.single.id, 'g-dev');
+      expect(r.draft.recipients.last.type, ResolvedRecipientType.group);
+      expect(recipientIds(r), ['u-me', 'g-dev']);
       // Primera ocurrencia: el lunes 5 de octubre.
       expect(r.draft.date, date(2026, 10, 5));
     });
@@ -46,7 +46,7 @@ void main() {
         'Crea una alarma mañana a las 8 para Nicolás que diga "Reunión de proyecto".',
       );
       expect(r.draft.message, 'Reunión de proyecto');
-      expect(recipientIds(r), ['u-nicolas']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas']);
       expect(r.draft.time, time(8, 0));
     });
 
@@ -58,6 +58,7 @@ void main() {
       expect(r.confirmation!.lines.map((l) => l.text), [
         '08:00 AM',
         'Mañana',
+        'Tú',
         'Juan Pérez',
         'Reunión de proyecto',
       ]);
@@ -83,30 +84,30 @@ void main() {
         final r = interpret(text);
         expect(r.draft.intent, CommandIntent.createAlarm, reason: text);
         expect(r.draft.time, expected.$1, reason: text);
-        expect(recipientIds(r), expected.$2, reason: text);
+        expect(recipientIds(r), ['u-me', ...expected.$2], reason: text);
       });
     });
 
     test('múltiples destinatarios con comas', () {
       final r = interpret('Pon una alarma mañana a las 7 para Nicolás, Juan y María');
-      expect(recipientIds(r), ['u-nicolas', 'u-juan', 'u-maria']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas', 'u-juan', 'u-maria']);
     });
 
     test('destinatarios con "con" (dictado por voz)', () {
       final r = interpret('Establece una alarma a las 4:00 pm con Nicolás, Juan y María');
       expect(r.draft.time, LocalTime(16, 0));
-      expect(recipientIds(r), ['u-nicolas', 'u-juan', 'u-maria']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas', 'u-juan', 'u-maria']);
       expect(r.confirmation?.partial, isFalse);
     });
 
     test('nombres sin comas: "Nicolás Juan y María"', () {
       final r = interpret('alarma a las 4 pm para nicolas juan y maria');
-      expect(recipientIds(r), ['u-nicolas', 'u-juan', 'u-maria']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas', 'u-juan', 'u-maria']);
     });
 
     test('nombre completo seguido de otro sin coma', () {
       final r = interpret('alarma a las 4 pm con Juan Pérez María');
-      expect(recipientIds(r), ['u-juan', 'u-maria']);
+      expect(recipientIds(r), ['u-me', 'u-juan', 'u-maria']);
     });
 
     test('"con" que no es una persona queda como mensaje', () {
@@ -117,12 +118,12 @@ void main() {
 
     test('"todo el equipo" se resuelve como grupo', () {
       final r = interpret('Programa una alarma para todo el equipo a las 9 mañana');
-      expect(r.draft.recipients.single.id, 'g-dev');
+      expect(recipientIds(r), ['u-me', 'g-dev']);
     });
 
     test('grupo por nombre con artículo: "para la familia"', () {
       final r = interpret('Pon una alarma mañana a las 9 para la familia');
-      expect(r.draft.recipients.single.id, 'g-family');
+      expect(recipientIds(r), ['u-me', 'g-family']);
     });
 
     test('sin destinatario: alarma personal', () {
@@ -147,7 +148,7 @@ void main() {
 
     test('recordatorio con "que": mensaje y destinatario', () {
       final r = interpret('Recuérdale a Juan que llame al médico mañana a las 4');
-      expect(recipientIds(r), ['u-juan']);
+      expect(recipientIds(r), ['u-me', 'u-juan']);
       expect(r.draft.message, 'Llame al médico');
       expect(r.draft.time, time(16, 0));
       expect(r.draft.date, date(2026, 10, 4));
@@ -191,24 +192,24 @@ void main() {
         context(),
       );
       expect(next.status, InterpretationStatus.needsConfirmation);
-      expect(recipientIds(next), ['u-carlos-t']);
+      expect(recipientIds(next), ['u-me', 'u-carlos-t']);
     });
 
     test('responder escribiendo el apellido', () {
       final r = interpret('Crea una alarma mañana a las 8 para Carlos');
       final next = interpreter.answerSync(r, 'Carlos Gómez', context());
-      expect(recipientIds(next), ['u-carlos-g']);
+      expect(recipientIds(next), ['u-me', 'u-carlos-g']);
     });
 
     test('responder "el primero"', () {
       final r = interpret('Crea una alarma mañana a las 8 para Carlos');
       final next = interpreter.answerSync(r, 'el primero', context());
-      expect(recipientIds(next), ['u-carlos-p']);
+      expect(recipientIds(next), ['u-me', 'u-carlos-p']);
     });
 
     test('nombre completo resuelve directamente', () {
       final r = interpret('Crea una alarma mañana a las 8 para Carlos Torres');
-      expect(recipientIds(r), ['u-carlos-t']);
+      expect(recipientIds(r), ['u-me', 'u-carlos-t']);
     });
 
     test('usuario inexistente ofrece buscar, invitar o cancelar', () {
@@ -280,7 +281,7 @@ void main() {
         restored.pendingClarification!.options.first,
         context(),
       );
-      expect(recipientIds(next), ['u-carlos-p']);
+      expect(recipientIds(next), ['u-me', 'u-carlos-p']);
     });
 
     test('el JSON del borrador tiene el formato de la API', () {
@@ -291,7 +292,7 @@ void main() {
       expect(json['time'], '08:00');
       expect(json['message'], 'Reunión');
       final recipients = json['recipients'] as List<Map<String, dynamic>>;
-      expect(recipients.single['display_name'], 'Nicolás');
+      expect(recipients.map((x) => x['display_name']), ['Tú', 'Nicolás']);
     });
   });
 }

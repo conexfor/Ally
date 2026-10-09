@@ -20,7 +20,7 @@ void main() {
     expect(input.localTime, LocalTime(8, 0));
     expect(
       input.recipients.map((r) => '${r.type.wire}:${r.id}'),
-      ['user:u-juan', 'group:g-dev'],
+      ['user:u-me', 'user:u-juan', 'group:g-dev'],
     );
   });
 

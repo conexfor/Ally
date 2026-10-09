@@ -141,7 +141,7 @@ void main() {
       final next = interpreter.answerSync(r, 'a las 7:30 am', context());
       expect(next.draft.time, time(7, 30));
       expect(next.draft.date, date(2026, 10, 4));
-      expect(recipientIds(next), ['u-juan']);
+      expect(recipientIds(next), ['u-me', 'u-juan']);
     });
 
     test('hora explícita ya pasada hoy propone mañana', () {
@@ -269,7 +269,7 @@ void main() {
     test('con destinatario', () {
       final r = interpret('Todos los días a las 7 para Nicolás');
       expect(r.draft.repeat, RepeatRule.daily());
-      expect(recipientIds(r), ['u-nicolas']);
+      expect(recipientIds(r), ['u-me', 'u-nicolas']);
     });
 
     test('resumen de la recurrencia', () {

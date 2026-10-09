@@ -93,9 +93,10 @@ class DraftBuilder {
       }
     }
 
-    if (parsed.includesSelf || (resolved.isEmpty && unresolved.isEmpty)) {
-      _addUnique(resolved, RecipientResolver.self(ctx));
-    }
+    // Quien crea la alarma siempre la recibe (también si es para otros); los
+    // demás solo suenan cuando la aceptan. Se puede quitar en el formulario.
+    final self = RecipientResolver.self(ctx);
+    if (!resolved.any((r) => r.sameAs(self))) resolved.insert(0, self);
 
     return base.copyWith(
       date: schedule.date,
