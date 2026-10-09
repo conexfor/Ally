@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Modo oscuro: mismo fondo que la app (AppTheme, isDark). -->
+    <color name="splash_background">#0D0D10</color>
+    <color name="splash_icon_background">#26262E</color>
+</resources>

@@ -1,0 +1,10 @@
+{
+  "API_BASE_URL": "https://api.tu-dominio.com",
+  "PUBLIC_WEB_URL": "",
+  "PLAY_STORE_URL": "",
+  "GOOGLE_SERVER_CLIENT_ID": "",
+  "FIREBASE_API_KEY": "",
+  "FIREBASE_APP_ID": "",
+  "FIREBASE_MESSAGING_SENDER_ID": "",
+  "FIREBASE_PROJECT_ID": ""
+}

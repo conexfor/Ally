@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fondo del icono de la app en el lanzador. -->
+    <color name="ic_launcher_background">#4F46E5</color>
+    <!-- Pantalla de arranque: los mismos colores que la de la app (SplashScreen
+         de Flutter, AppTheme.background) para que se vean como una sola. -->
+    <color name="splash_background">#F7F8FA</color>
+    <color name="splash_icon_background">#16151B</color>
+</resources>
